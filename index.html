@@ -21,16 +21,23 @@
   }
 
   html, body {
-    height: 100%;
+    width: 100%; height: 100%;
     background: var(--bg);
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
     color: #fff;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 40px 24px;
     gap: 28px;
+    transform-origin: center center;
+    /* scale applied by JS */
   }
 
   /* ── HEADER ── */
@@ -39,7 +46,6 @@
     align-items: center;
     gap: 10px;
     align-self: flex-start;
-    margin-left: calc(50% - 490px);
   }
   .logo {
     width: 36px; height: 36px;
@@ -342,6 +348,7 @@
 </style>
 </head>
 <body class="before">
+<div class="wrap">
 
 <div class="header">
   <div class="logo">SP</div>
@@ -490,9 +497,26 @@
 
 </div>
 
+</div><!-- /.wrap -->
+
 <script>
   // stagger add lines
   document.querySelectorAll('.dl.add').forEach((el, i) => el.classList.add('s' + Math.min(i, 11)));
+
+  // responsive scale: fit stage to viewport
+  const wrap = document.querySelector('.wrap');
+  const NATURAL_W = 954;  // phone(418) + gap(36) + panel(420) + padding(80)
+  const NATURAL_H = 1060; // header(50) + gap(28) + stage(952) + gap(28) + padding(2x)
+  function scaleToFit() {
+    const s = Math.min(
+      window.innerWidth  / NATURAL_W,
+      window.innerHeight / NATURAL_H,
+      1
+    );
+    wrap.style.transform = `scale(${s})`;
+  }
+  window.addEventListener('resize', scaleToFit);
+  scaleToFit();
 
   let current = 'before';
 
