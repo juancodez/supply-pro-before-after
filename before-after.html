@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supply Pro · Before / After</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --green:  #006830;
+    --green-h:#005528;
+    --bg:     #0a0a0a;
+    --surface:#141414;
+    --border: #222;
+    --muted:  #555;
+    --add-bg: rgba(74,222,128,0.08);
+    --add-fg: #4ade80;
+    --rem-bg: rgba(248,113,113,0.08);
+    --rem-fg: #f87171;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 28px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    align-self: flex-start;
+    margin-left: calc(50% - 490px);
+  }
+  .logo {
+    width: 36px; height: 36px;
+    background: var(--green);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; color: #fff;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .header span { font-size: 18px; color: var(--muted); font-weight: 500; }
+
+  /* ── STAGE ── */
+  .stage {
+    display: flex;
+    align-items: flex-start;
+    gap: 36px;
+  }
+
+  /* ── PHONE COLUMN ── */
+  .phone-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ── PHONE SHELL ── */
+  .phone {
+    position: relative;
+    width: 418px; /* 390 + 14*2 */
+    height: 872px; /* 844 + 14*2 */
+    background: #1c1c1e;
+    border-radius: 54px;
+    box-shadow:
+      0 0 0 1px #3a3a3c,
+      inset 0 0 0 1px #000,
+      0 48px 120px rgba(0,0,0,0.75),
+      0 12px 32px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+  }
+  /* volume buttons left */
+  .phone::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 90px;
+    width: 3px; height: 30px;
+    background: #3a3a3c;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 46px 0 #3a3a3c, 0 86px 0 #3a3a3c;
+  }
+  /* power button right */
+  .phone::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 128px;
+    width: 3px; height: 62px;
+    background: #3a3a3c;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .phone-screen {
+    position: absolute;
+    inset: 14px;
+    border-radius: 40px;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 13px; left: 50%;
+    transform: translateX(-50%);
+    width: 118px; height: 35px;
+    background: #000;
+    border-radius: 18px;
+    z-index: 10;
+  }
+
+  .phone-screen img {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    /* dissolve: ease-in-out cubic */
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .phone-screen img.hidden { opacity: 0; }
+
+  .home-bar {
+    position: absolute;
+    bottom: 9px; left: 50%;
+    transform: translateX(-50%);
+    width: 132px; height: 5px;
+    background: rgba(255,255,255,0.28);
+    border-radius: 3px;
+    z-index: 10;
+  }
+
+  /* ── STATE LABEL ── */
+  .state-chip {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    transition: background 0.4s, color 0.4s;
+  }
+  .state-chip.before { background: rgba(248,113,113,0.12); color: #f87171; }
+  .state-chip.after  { background: rgba(74,222,128,0.12);  color: #4ade80; }
+
+  /* ── BUTTONS ── */
+  .btns {
+    display: flex;
+    gap: 10px;
+  }
+  .sp-btn {
+    height: 47px;
+    min-width: 140px;
+    padding: 0 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: 2px solid var(--green);
+    transition: background 0.2s, color 0.2s, transform 0.1s;
+    letter-spacing: -0.01em;
+  }
+  .sp-btn:active { transform: scale(0.97); }
+  .sp-btn.active   { background: var(--green); color: #fff; border-color: var(--green); }
+  .sp-btn.inactive { background: transparent; color: var(--green); }
+  .sp-btn.inactive:hover { background: rgba(0,104,48,0.1); }
+
+  /* ── CODE PANEL ── */
+  .code-panel {
+    width: 420px;
+    height: 872px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .cp-header {
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .cp-header h2 { font-size: 12px; font-weight: 600; margin-bottom: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .metric {
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+    transition: opacity 0.4s;
+  }
+  .metric.dim { opacity: 0.3; }
+  .metric-val { font-size: 18px; font-weight: 700; }
+  .metric-val.g { color: var(--add-fg); }
+  .metric-val.r { color: var(--rem-fg); }
+  .metric-val.b { color: #60a5fa; }
+  .metric-lbl { font-size: 10px; color: var(--muted); margin-top: 1px; letter-spacing: 0.04em; }
+
+  .cp-files {
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .file-tag {
+    font-size: 10px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--muted);
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.4s, color 0.4s, border-color 0.4s;
+  }
+  .file-tag.changed { color: #60a5fa; border-color: rgba(96,165,250,0.3); }
+  .file-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  .cp-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 0 12px;
+  }
+  .cp-scroll::-webkit-scrollbar { width: 3px; }
+  .cp-scroll::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+
+  /* chunk */
+  .chunk { margin-bottom: 16px; }
+  .chunk-hdr {
+    padding: 3px 18px;
+    font-size: 10.5px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: #60a5fa;
+    background: rgba(96,165,250,0.05);
+    border-top: 1px solid rgba(96,165,250,0.12);
+    border-bottom: 1px solid rgba(96,165,250,0.12);
+    margin-bottom: 1px;
+  }
+
+  /* lines */
+  .dl {
+    display: flex;
+    align-items: baseline;
+    padding: 0 18px;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 11px;
+    line-height: 1.65;
+    white-space: pre;
+    /* per-line animation controlled by JS */
+    transition: background 0.35s;
+  }
+  .dl .ln { min-width: 24px; color: #333; text-align: right; margin-right: 12px; user-select: none; flex-shrink: 0; font-size: 10px; }
+  .dl .sg { width: 12px; flex-shrink: 0; font-weight: 700; }
+  .dl .co { flex: 1; }
+
+  /* ctx always visible */
+  .dl.ctx .sg { color: #333; }
+  .dl.ctx .co { color: #555; }
+
+  /* add lines: hidden by default, shown in after state */
+  .dl.add {
+    background: var(--add-bg);
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity 0.35s ease, transform 0.35s ease, background 0.35s;
+  }
+  .dl.add .sg { color: var(--add-fg); }
+  .dl.add .co { color: #c6f6d5; }
+
+  /* remove lines: shown in before, faded in after */
+  .dl.rem {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .dl.rem .sg { color: var(--rem-fg); }
+  .dl.rem .co { color: #fecaca; text-decoration: line-through; text-decoration-color: rgba(248,113,113,0.5); }
+
+  /* AFTER STATE */
+  body.after .dl.add {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  body.after .dl.rem {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  body.after .metric.dim { opacity: 1; }
+  body.after .file-tag { color: #60a5fa; border-color: rgba(96,165,250,0.3); }
+
+  /* stagger add lines via nth-child-like class set by JS */
+  .dl.add.s0  { transition-delay: 0.05s; }
+  .dl.add.s1  { transition-delay: 0.10s; }
+  .dl.add.s2  { transition-delay: 0.15s; }
+  .dl.add.s3  { transition-delay: 0.20s; }
+  .dl.add.s4  { transition-delay: 0.25s; }
+  .dl.add.s5  { transition-delay: 0.30s; }
+  .dl.add.s6  { transition-delay: 0.35s; }
+  .dl.add.s7  { transition-delay: 0.40s; }
+  .dl.add.s8  { transition-delay: 0.45s; }
+  .dl.add.s9  { transition-delay: 0.50s; }
+  .dl.add.s10 { transition-delay: 0.55s; }
+  .dl.add.s11 { transition-delay: 0.60s; }
+
+  /* effort */
+  .effort {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .effort h3 { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .er { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .er-lbl { font-size: 10px; color: var(--muted); width: 88px; flex-shrink: 0; }
+  .er-track { flex: 1; height: 3px; background: #222; border-radius: 2px; overflow: hidden; }
+  .er-fill { height: 100%; border-radius: 2px; background: var(--green); transform: scaleX(0); transform-origin: left; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .er-fill.blue { background: #60a5fa; }
+  body.after .er-fill { transform: scaleX(1); }
+  .er-val { font-size: 10px; color: var(--muted); width: 24px; text-align: right; }
+</style>
+</head>
+<body class="before">
+
+<div class="header">
+  <div class="logo">SP</div>
+  <h1>Supply Pro</h1>
+  <span>· Before and After Testing Screens</span>
+</div>
+
+<div class="stage">
+
+  <!-- PHONE -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="dynamic-island"></div>
+        <img id="img-before" src="fwp-05-test.png" alt="Before">
+        <img id="img-after"  src="fwp-06-test.png" alt="After" class="hidden">
+        <div class="home-bar"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <!-- state chip removed -->
+      <!-- <span class="state-chip before" id="chip">Before · fwp-05-test</span> -->
+      <div class="btns">
+        <button class="sp-btn active"   id="btn-b" onclick="go('before')">Before</button>
+        <button class="sp-btn inactive" id="btn-a" onclick="go('after')">After</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODE PANEL -->
+  <div class="code-panel">
+    <div class="cp-header">
+      <h2>Code Changes</h2>
+      <div class="metrics">
+        <div class="metric" id="m-add">
+          <div class="metric-val b" id="m-total">90</div>
+          <div class="metric-lbl">Total Lines</div>
+        </div>
+        <div class="metric dim" id="m-rem">
+          <div class="metric-val g">+22</div>
+          <div class="metric-lbl">Net Difference</div>
+          <div style="font-size:9px;color:#444;margin-top:2px">+34 added · −12 removed</div>
+        </div>
+        <div class="metric dim" id="m-files">
+          <div class="metric-val b">3</div>
+          <div class="metric-lbl">Files Changed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cp-files">
+      <div class="file-tag"><span class="file-dot"></span>SupplierCard.tsx</div>
+      <div class="file-tag"><span class="file-dot"></span>SupplierList.tsx</div>
+      <div class="file-tag"><span class="file-dot"></span>supplier.types.ts</div>
+    </div>
+
+    <div class="cp-scroll">
+
+      <!-- SupplierCard.tsx -->
+      <div class="chunk">
+        <div class="chunk-hdr">@@ SupplierCard.tsx — props @@</div>
+        <div class="dl ctx"><span class="ln">14</span><span class="sg"> </span><span class="co">interface SupplierCardProps {</span></div>
+        <div class="dl ctx"><span class="ln">15</span><span class="sg"> </span><span class="co">  supplier: Supplier</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  showOrderSummary?: boolean</span></div>
+        <div class="dl ctx"><span class="ln">16</span><span class="sg"> </span><span class="co">}</span></div>
+      </div>
+
+      <div class="chunk">
+        <div class="chunk-hdr">@@ SupplierCard.tsx — render @@</div>
+        <div class="dl ctx"><span class="ln">29</span><span class="sg"> </span><span class="co">    &lt;View style={styles.card}&gt;</span></div>
+        <div class="dl rem"><span class="ln">30</span><span class="sg">−</span><span class="co">      &lt;Text style={styles.delivery}&gt;</span></div>
+        <div class="dl rem"><span class="ln">31</span><span class="sg">−</span><span class="co">        {supplier.deliveryTime}</span></div>
+        <div class="dl rem"><span class="ln">32</span><span class="sg">−</span><span class="co">      &lt;/Text&gt;</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      &lt;DeliveryBadge</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        date={supplier.deliveryDate}</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        time={supplier.deliveryTime}</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        highlight={isToday(supplier.deliveryDate)}</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      /&gt;</span></div>
+        <div class="dl ctx"><span class="ln">33</span><span class="sg"> </span><span class="co">      &lt;Text style={styles.price}&gt;</span></div>
+        <div class="dl rem"><span class="ln">34</span><span class="sg">−</span><span class="co">        {supplier.productName}</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        {supplier.productName} · {supplier.qty} Artikel</span></div>
+        <div class="dl ctx"><span class="ln">35</span><span class="sg"> </span><span class="co">      &lt;/Text&gt;</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      {showOrderSummary &amp;&amp; (</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        &lt;Text style={styles.total}&gt;</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">          Total: {formatCurrency(supplier.total)}</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        &lt;/Text&gt;</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      )}</span></div>
+        <div class="dl ctx"><span class="ln">36</span><span class="sg"> </span><span class="co">    &lt;/View&gt;</span></div>
+      </div>
+
+      <!-- supplier.types.ts -->
+      <div class="chunk">
+        <div class="chunk-hdr">@@ supplier.types.ts @@</div>
+        <div class="dl ctx"><span class="ln"> 8</span><span class="sg"> </span><span class="co">export interface Supplier {</span></div>
+        <div class="dl ctx"><span class="ln"> 9</span><span class="sg"> </span><span class="co">  id: string</span></div>
+        <div class="dl ctx"><span class="ln">10</span><span class="sg"> </span><span class="co">  name: string</span></div>
+        <div class="dl rem"><span class="ln">11</span><span class="sg">−</span><span class="co">  deliveryTime: string</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  deliveryDate: Date</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  deliveryTime: string</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  qty: number</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  total: number</span></div>
+        <div class="dl ctx"><span class="ln">12</span><span class="sg"> </span><span class="co">  logo: ImageSource</span></div>
+        <div class="dl ctx"><span class="ln">13</span><span class="sg"> </span><span class="co">}</span></div>
+      </div>
+
+      <!-- SupplierList.tsx -->
+      <div class="chunk">
+        <div class="chunk-hdr">@@ SupplierList.tsx @@</div>
+        <div class="dl ctx"><span class="ln">53</span><span class="sg"> </span><span class="co">    data={suppliers}</span></div>
+        <div class="dl ctx"><span class="ln">54</span><span class="sg"> </span><span class="co">    renderItem={({ item }) =&gt; (</span></div>
+        <div class="dl rem"><span class="ln">55</span><span class="sg">−</span><span class="co">      &lt;SupplierCard supplier={item} /&gt;</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      &lt;SupplierCard</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        supplier={item}</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        showOrderSummary</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      /&gt;</span></div>
+        <div class="dl ctx"><span class="ln">56</span><span class="sg"> </span><span class="co">    )}</span></div>
+      </div>
+
+    </div>
+
+    <div class="effort">
+      <h3>Change Effort</h3>
+      <div class="er">
+        <span class="er-lbl">UI Complexity</span>
+        <div class="er-track"><div class="er-fill" style="transform:scaleX(0.45)"></div></div>
+        <span class="er-val">Low</span>
+      </div>
+      <div class="er">
+        <span class="er-lbl">Data Model</span>
+        <div class="er-track"><div class="er-fill" style="transform:scaleX(0.6)"></div></div>
+        <span class="er-val">Med</span>
+      </div>
+      <div class="er">
+        <span class="er-lbl">API Changes</span>
+        <div class="er-track"><div class="er-fill" style="transform:scaleX(0.3)"></div></div>
+        <span class="er-val">Low</span>
+      </div>
+      <div class="er">
+        <span class="er-lbl">Test Coverage</span>
+        <div class="er-track"><div class="er-fill blue" style="transform:scaleX(0.7)"></div></div>
+        <span class="er-val">Med</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // stagger add lines
+  document.querySelectorAll('.dl.add').forEach((el, i) => el.classList.add('s' + Math.min(i, 11)));
+
+  let current = 'before';
+
+  function go(side) {
+    if (current === side) return;
+    current = side;
+
+    const body     = document.body;
+    const before   = document.getElementById('img-before');
+    const after    = document.getElementById('img-after');
+    const btnB  = document.getElementById('btn-b');
+    const btnA  = document.getElementById('btn-a');
+    const total = document.getElementById('m-total');
+
+    if (side === 'after') {
+      before.classList.add('hidden');
+      after.classList.remove('hidden');
+      body.className = 'after';
+      btnB.classList.replace('active','inactive');
+      btnA.classList.replace('inactive','active');
+      total.textContent = '112';
+    } else {
+      after.classList.add('hidden');
+      before.classList.remove('hidden');
+      body.className = 'before';
+      btnA.classList.replace('active','inactive');
+      btnB.classList.replace('inactive','active');
+      total.textContent = '90';
+    }
+  }
+</script>
+</body>
+</html>
