@@ -183,7 +183,7 @@
 
   /* ── CODE PANEL ── */
   .code-panel {
-    width: 420px;
+    width: 460px;
     height: 872px;
     background: var(--surface);
     border: 1px solid var(--border);
@@ -248,6 +248,7 @@
   .cp-scroll {
     flex: 1;
     overflow-y: auto;
+    overflow-x: auto;
     padding: 12px 0 12px;
   }
   .cp-scroll::-webkit-scrollbar { width: 3px; }
@@ -345,6 +346,48 @@
   .er-fill.blue { background: #60a5fa; }
   body.after .er-fill { transform: scaleX(1); }
   .er-val { font-size: 10px; color: var(--muted); width: 24px; text-align: right; }
+
+  /* ── HIGH-CONTRAST: readability + screen-share fixes ── */
+  :root {
+    --muted:  #999;          /* was #555 — #555 on #141414 fails WCAG AA */
+    --border: #2e2e2e;       /* was #222 — barely visible borders */
+    --add-bg: rgba(74,222,128,0.14);
+  }
+  /* Panel header */
+  .cp-header h2 { color: #e8e8e8; font-size: 14px; margin-bottom: 6px; }
+  .a11y-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.3);
+    border-radius: 20px; padding: 4px 12px; font-size: 12px; color: #7bbcff;
+    font-family: 'SF Mono', 'Fira Code', monospace; font-weight: 600;
+    margin-bottom: 10px; letter-spacing: 0;
+  }
+  /* Dimmed metrics: 0.3 is nearly invisible on screen share */
+  .metric.dim { opacity: 0.5; }
+  .metric-val { font-size: 30px; }
+  .metric-lbl { font-size: 13px; color: #bbb; margin-top: 6px; letter-spacing: 0; }
+  .metric { padding: 12px 8px; }
+  /* File tags */
+  .file-tag { font-size: 12px; padding: 4px 10px; }
+  /* Code diff: larger font + generous leading + colored left-border strips */
+  .dl { font-size: 14px; line-height: 1.85; padding: 0 20px; }
+  .dl .ln { color: #555; font-size: 12px; min-width: 28px; margin-right: 14px; }
+  .dl .sg { width: 14px; }
+  .dl.ctx .sg { color: #555; }
+  .dl.ctx .co { color: #888; }
+  /* ponytail: inset box-shadow adds the strip without touching layout */
+  .dl.add { box-shadow: inset 3px 0 0 rgba(74,222,128,0.9); }
+  .dl.rem { box-shadow: inset 3px 0 0 rgba(248,113,113,0.9); }
+  /* Chunk headers */
+  .chunk-hdr { font-size: 13px; padding: 6px 20px; color: #7bbcff; }
+  /* Effort rows */
+  .effort h3 { font-size: 12px; }
+  .er-lbl { font-size: 12px; color: #bbb; width: 100px; }
+  .er-val { font-size: 12px; color: #bbb; }
+  .er-track { height: 5px; border-radius: 3px; }
+  /* Inactive button: #006830 on dark bg = ~2.8:1, fails AA */
+  .sp-btn.inactive { color: #22c55e; border-color: #22c55e; }
+  .sp-btn.inactive:hover { background: rgba(34,197,94,0.1); border-color: #22c55e; }
 </style>
 </head>
 <body class="before">
@@ -382,7 +425,8 @@
   <!-- CODE PANEL -->
   <div class="code-panel">
     <div class="cp-header">
-      <h2>Code Changes</h2>
+      <h2>What Changed</h2>
+      <div class="a11y-badge">3 design issues fixed · fwp-05 → fwp-06</div>
       <div class="metrics">
         <div class="metric" id="m-add">
           <div class="metric-val b" id="m-total">90</div>
@@ -390,8 +434,7 @@
         </div>
         <div class="metric dim" id="m-rem">
           <div class="metric-val g">+22</div>
-          <div class="metric-lbl">Net Difference</div>
-          <div style="font-size:9px;color:#444;margin-top:2px">+34 added · −12 removed</div>
+          <div class="metric-lbl">Lines Added</div>
         </div>
         <div class="metric dim" id="m-files">
           <div class="metric-val b">3</div>
@@ -401,98 +444,61 @@
     </div>
 
     <div class="cp-files">
-      <div class="file-tag"><span class="file-dot"></span>SupplierCard.tsx</div>
-      <div class="file-tag"><span class="file-dot"></span>SupplierList.tsx</div>
-      <div class="file-tag"><span class="file-dot"></span>supplier.types.ts</div>
+      <div class="file-tag"><span class="file-dot"></span>theme/typography.ts</div>
+      <div class="file-tag"><span class="file-dot"></span>SupplierCard.styles.ts</div>
+      <div class="file-tag"><span class="file-dot"></span>tokens/design.ts</div>
     </div>
 
     <div class="cp-scroll">
 
-      <!-- SupplierCard.tsx -->
+      <!-- typography.ts — font family swap -->
       <div class="chunk">
-        <div class="chunk-hdr">@@ SupplierCard.tsx — props @@</div>
-        <div class="dl ctx"><span class="ln">14</span><span class="sg"> </span><span class="co">interface SupplierCardProps {</span></div>
-        <div class="dl ctx"><span class="ln">15</span><span class="sg"> </span><span class="co">  supplier: Supplier</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  showOrderSummary?: boolean</span></div>
+        <div class="chunk-hdr">@@ theme/typography.ts — font family @@</div>
+        <div class="dl ctx"><span class="ln"> 3</span><span class="sg"> </span><span class="co">export const typography = {</span></div>
+        <div class="dl rem"><span class="ln"> 4</span><span class="sg">−</span><span class="co">  regular: 'FiraSans-Regular',</span></div>
+        <div class="dl rem"><span class="ln"> 5</span><span class="sg">−</span><span class="co">  semiBold: 'FiraSans-SemiBold',</span></div>
+        <div class="dl rem"><span class="ln"> 6</span><span class="sg">−</span><span class="co">  bold: 'FiraSans-Bold',</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  regular: 'Inter-Regular',</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  semiBold: 'Inter-SemiBold',</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  bold: 'Inter-Bold',</span></div>
+        <div class="dl ctx"><span class="ln"> 7</span><span class="sg"> </span><span class="co">}</span></div>
+      </div>
+
+      <!-- typography.ts — type scale -->
+      <div class="chunk">
+        <div class="chunk-hdr">@@ theme/typography.ts — type scale @@</div>
+        <div class="dl ctx"><span class="ln">12</span><span class="sg"> </span><span class="co">export const fontSize = {</span></div>
+        <div class="dl rem"><span class="ln">13</span><span class="sg">−</span><span class="co">  body:      12,</span></div>
+        <div class="dl rem"><span class="ln">14</span><span class="sg">−</span><span class="co">  secondary: 10,</span></div>
+        <div class="dl rem"><span class="ln">15</span><span class="sg">−</span><span class="co">  label:     10,</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  body:      16,</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  secondary: 13,</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  label:     12,</span></div>
         <div class="dl ctx"><span class="ln">16</span><span class="sg"> </span><span class="co">}</span></div>
+        <div class="dl ctx"><span class="ln">17</span><span class="sg"> </span><span class="co">export const lineHeight = {</span></div>
+        <div class="dl rem"><span class="ln">18</span><span class="sg">−</span><span class="co">  body: 16,  <span style="color:#555">// 1.33 — too tight</span></span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  body: 24,  <span style="color:#555">// 1.5 — WCAG recommended</span></span></div>
+        <div class="dl ctx"><span class="ln">19</span><span class="sg"> </span><span class="co">}</span></div>
       </div>
 
+      <!-- SupplierCard.styles.ts — remove shadows -->
       <div class="chunk">
-        <div class="chunk-hdr">@@ SupplierCard.tsx — render @@</div>
-        <div class="dl ctx"><span class="ln">29</span><span class="sg"> </span><span class="co">    &lt;View style={styles.card}&gt;</span></div>
-        <div class="dl rem"><span class="ln">30</span><span class="sg">−</span><span class="co">      &lt;Text style={styles.delivery}&gt;</span></div>
-        <div class="dl rem"><span class="ln">31</span><span class="sg">−</span><span class="co">        {supplier.deliveryTime}</span></div>
-        <div class="dl rem"><span class="ln">32</span><span class="sg">−</span><span class="co">      &lt;/Text&gt;</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      &lt;DeliveryBadge</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        date={supplier.deliveryDate}</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        time={supplier.deliveryTime}</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        highlight={isToday(supplier.deliveryDate)}</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      /&gt;</span></div>
-        <div class="dl ctx"><span class="ln">33</span><span class="sg"> </span><span class="co">      &lt;Text style={styles.price}&gt;</span></div>
-        <div class="dl rem"><span class="ln">34</span><span class="sg">−</span><span class="co">        {supplier.productName}</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        {supplier.productName} · {supplier.qty} Artikel</span></div>
-        <div class="dl ctx"><span class="ln">35</span><span class="sg"> </span><span class="co">      &lt;/Text&gt;</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      {showOrderSummary &amp;&amp; (</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        &lt;Text style={styles.total}&gt;</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">          Total: {formatCurrency(supplier.total)}</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        &lt;/Text&gt;</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      )}</span></div>
-        <div class="dl ctx"><span class="ln">36</span><span class="sg"> </span><span class="co">    &lt;/View&gt;</span></div>
-      </div>
-
-      <!-- supplier.types.ts -->
-      <div class="chunk">
-        <div class="chunk-hdr">@@ supplier.types.ts @@</div>
-        <div class="dl ctx"><span class="ln"> 8</span><span class="sg"> </span><span class="co">export interface Supplier {</span></div>
-        <div class="dl ctx"><span class="ln"> 9</span><span class="sg"> </span><span class="co">  id: string</span></div>
-        <div class="dl ctx"><span class="ln">10</span><span class="sg"> </span><span class="co">  name: string</span></div>
-        <div class="dl rem"><span class="ln">11</span><span class="sg">−</span><span class="co">  deliveryTime: string</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  deliveryDate: Date</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  deliveryTime: string</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  qty: number</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  total: number</span></div>
-        <div class="dl ctx"><span class="ln">12</span><span class="sg"> </span><span class="co">  logo: ImageSource</span></div>
-        <div class="dl ctx"><span class="ln">13</span><span class="sg"> </span><span class="co">}</span></div>
-      </div>
-
-      <!-- SupplierList.tsx -->
-      <div class="chunk">
-        <div class="chunk-hdr">@@ SupplierList.tsx @@</div>
-        <div class="dl ctx"><span class="ln">53</span><span class="sg"> </span><span class="co">    data={suppliers}</span></div>
-        <div class="dl ctx"><span class="ln">54</span><span class="sg"> </span><span class="co">    renderItem={({ item }) =&gt; (</span></div>
-        <div class="dl rem"><span class="ln">55</span><span class="sg">−</span><span class="co">      &lt;SupplierCard supplier={item} /&gt;</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      &lt;SupplierCard</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        supplier={item}</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">        showOrderSummary</span></div>
-        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">      /&gt;</span></div>
-        <div class="dl ctx"><span class="ln">56</span><span class="sg"> </span><span class="co">    )}</span></div>
+        <div class="chunk-hdr">@@ SupplierCard.styles.ts — card surface @@</div>
+        <div class="dl ctx"><span class="ln">22</span><span class="sg"> </span><span class="co">  card: {</span></div>
+        <div class="dl ctx"><span class="ln">23</span><span class="sg"> </span><span class="co">    backgroundColor: '#FFFFFF',</span></div>
+        <div class="dl ctx"><span class="ln">24</span><span class="sg"> </span><span class="co">    borderRadius: 8,</span></div>
+        <div class="dl rem"><span class="ln">25</span><span class="sg">−</span><span class="co">    shadowColor: '#000000',</span></div>
+        <div class="dl rem"><span class="ln">26</span><span class="sg">−</span><span class="co">    shadowOffset: { width: 0, height: 4 },</span></div>
+        <div class="dl rem"><span class="ln">27</span><span class="sg">−</span><span class="co">    shadowOpacity: 0.15,</span></div>
+        <div class="dl rem"><span class="ln">28</span><span class="sg">−</span><span class="co">    shadowRadius: 8,</span></div>
+        <div class="dl rem"><span class="ln">29</span><span class="sg">−</span><span class="co">    elevation: 4,</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">    borderWidth: 1,</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">    borderColor: '#E8E8E8',</span></div>
+        <div class="dl ctx"><span class="ln">30</span><span class="sg"> </span><span class="co">  },</span></div>
       </div>
 
     </div>
 
-    <div class="effort">
-      <h3>Change Effort</h3>
-      <div class="er">
-        <span class="er-lbl">UI Complexity</span>
-        <div class="er-track"><div class="er-fill" style="transform:scaleX(0.45)"></div></div>
-        <span class="er-val">Low</span>
-      </div>
-      <div class="er">
-        <span class="er-lbl">Data Model</span>
-        <div class="er-track"><div class="er-fill" style="transform:scaleX(0.6)"></div></div>
-        <span class="er-val">Med</span>
-      </div>
-      <div class="er">
-        <span class="er-lbl">API Changes</span>
-        <div class="er-track"><div class="er-fill" style="transform:scaleX(0.3)"></div></div>
-        <span class="er-val">Low</span>
-      </div>
-      <div class="er">
-        <span class="er-lbl">Test Coverage</span>
-        <div class="er-track"><div class="er-fill blue" style="transform:scaleX(0.7)"></div></div>
-        <span class="er-val">Med</span>
-      </div>
-    </div>
   </div>
 
 </div>
@@ -505,7 +511,7 @@
 
   // responsive scale: fit stage to viewport
   const wrap = document.querySelector('.wrap');
-  const NATURAL_W = 954;  // phone(418) + gap(36) + panel(420) + padding(80)
+  const NATURAL_W = 994;  // phone(418) + gap(36) + panel(460) + padding(80)
   const NATURAL_H = 1060; // header(50) + gap(28) + stage(952) + gap(28) + padding(2x)
   function scaleToFit() {
     const s = Math.min(
