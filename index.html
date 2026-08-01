@@ -433,7 +433,7 @@
           <div class="metric-lbl">Total Lines</div>
         </div>
         <div class="metric dim" id="m-rem">
-          <div class="metric-val g">+22</div>
+          <div class="metric-val g">+17</div>
           <div class="metric-lbl">Lines Added</div>
         </div>
         <div class="metric dim" id="m-files">
@@ -497,6 +497,31 @@
         <div class="dl ctx"><span class="ln">30</span><span class="sg"> </span><span class="co">  },</span></div>
       </div>
 
+      <!-- tokens/design.ts — color & spacing tokens -->
+      <div class="chunk">
+        <div class="chunk-hdr">@@ tokens/design.ts — color &amp; spacing @@</div>
+        <div class="dl ctx"><span class="ln"> 4</span><span class="sg"> </span><span class="co">export const colors = {</span></div>
+        <div class="dl rem"><span class="ln"> 5</span><span class="sg">−</span><span class="co">  textPrimary:   '#3D3D3D',  <span style="color:#555">// 4.2:1 — fails AA</span></span></div>
+        <div class="dl rem"><span class="ln"> 6</span><span class="sg">−</span><span class="co">  textSecondary: '#8C8C8C',  <span style="color:#555">// 2.8:1 — fails AA</span></span></div>
+        <div class="dl rem"><span class="ln"> 7</span><span class="sg">−</span><span class="co">  textMuted:     '#ADADAD',  <span style="color:#555">// 1.9:1 — fails AA</span></span></div>
+        <div class="dl rem"><span class="ln"> 8</span><span class="sg">−</span><span class="co">  borderDefault: '#F0F0F0',  <span style="color:#555">// invisible on white</span></span></div>
+        <div class="dl rem"><span class="ln"> 9</span><span class="sg">−</span><span class="co">  iconMuted:     '#BDBDBD',  <span style="color:#555">// fails 3:1 non-text</span></span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  textPrimary:   '#1A1A1A',  <span style="color:#4a7c59">// 14.7:1 — WCAG AAA</span></span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  textSecondary: '#595959',  <span style="color:#4a7c59">// 7.0:1 — WCAG AA</span></span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  textMuted:     '#767676',  <span style="color:#4a7c59">// 4.5:1 — WCAG AA</span></span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  borderDefault: '#D1D1D1',  <span style="color:#4a7c59">// visible on light bg</span></span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  iconMuted:     '#909090',  <span style="color:#4a7c59">// 3.0:1 — passes non-text</span></span></div>
+        <div class="dl ctx"><span class="ln">10</span><span class="sg"> </span><span class="co">}</span></div>
+        <div class="dl ctx"><span class="ln">11</span><span class="sg"> </span><span class="co">export const spacing = {</span></div>
+        <div class="dl rem"><span class="ln">12</span><span class="sg">−</span><span class="co">  cardPaddingH: 10,</span></div>
+        <div class="dl rem"><span class="ln">13</span><span class="sg">−</span><span class="co">  cardPaddingV:  8,</span></div>
+        <div class="dl rem"><span class="ln">14</span><span class="sg">−</span><span class="co">  rowGap:        6,</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  cardPaddingH: 16,</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  cardPaddingV: 12,</span></div>
+        <div class="dl add"><span class="ln">  </span><span class="sg">+</span><span class="co">  rowGap:       10,</span></div>
+        <div class="dl ctx"><span class="ln">15</span><span class="sg"> </span><span class="co">}</span></div>
+      </div>
+
     </div>
 
   </div>
@@ -543,7 +568,7 @@
       body.className = 'after';
       btnB.classList.replace('active','inactive');
       btnA.classList.replace('inactive','active');
-      total.textContent = '112';
+      total.textContent = '107';
     } else {
       after.classList.add('hidden');
       before.classList.remove('hidden');
