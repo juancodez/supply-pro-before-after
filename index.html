@@ -432,13 +432,13 @@
           <div class="metric-val b" id="m-total">90</div>
           <div class="metric-lbl">Total Lines</div>
         </div>
-        <div class="metric dim" id="m-rem">
-          <div class="metric-val g">17</div>
-          <div class="metric-lbl">Lines Changed</div>
+        <div class="metric dim" id="m-added">
+          <div class="metric-val g">+17</div>
+          <div class="metric-lbl">Lines Added</div>
         </div>
-        <div class="metric dim" id="m-files">
-          <div class="metric-val b">3</div>
-          <div class="metric-lbl">Files Changed</div>
+        <div class="metric dim" id="m-removed">
+          <div class="metric-val r">−20</div>
+          <div class="metric-lbl">Lines Removed</div>
         </div>
       </div>
     </div>
@@ -568,7 +568,7 @@
       body.className = 'after';
       btnB.classList.replace('active','inactive');
       btnA.classList.replace('inactive','active');
-      total.textContent = '107';
+      total.textContent = '87';
     } else {
       after.classList.add('hidden');
       before.classList.remove('hidden');
